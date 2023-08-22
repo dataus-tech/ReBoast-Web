@@ -6,7 +6,7 @@ import * as Yup from 'yup';
 import moment from 'moment';
 import DaumPostcodeEmbed from 'react-daum-postcode';
 
-import { register } from 'app/slices/auth';
+import { register, emailCheck } from 'app/slices/auth';
 import { clearMessage } from 'app/slices/message';
 
 import FormField from 'app/components/FormField/FormField';
@@ -244,17 +244,17 @@ const Register = () => {
       alert('입력된 회원 정보를 확인해주세요.\n' + errList);
     }
     if (isAvailableEmail && isObjectEmpty(errors) && !hasEmptyString(values)) {
-      alert('회원가입이 완료되었습니다.');
-      navigate('/');
-      window.scrollTo(0, 0);
-      // dispatch(register({ nickname, email, password }))
-      //   .unwrap()
-      //   .then(() => {
-      //     alert('회원가입이 완료되었습니다.');
-      //     navigate('/');
-      //     window.scrollTo(0, 0);
-      //   })
-      //   .catch((err) => alert(err?.response?.data?.message));
+      // alert('회원가입이 완료되었습니다.');
+      // navigate('/');
+      // window.scrollTo(0, 0);
+      dispatch(register({ nickname, email, password }))
+        .unwrap()
+        .then(() => {
+          alert('회원가입이 완료되었습니다.');
+          navigate('/');
+          window.scrollTo(0, 0);
+        })
+        .catch((err) => alert(err?.response?.data?.message));
     }
   };
 
@@ -279,13 +279,18 @@ const Register = () => {
       return;
     }
     if (!Object.keys(errors).includes('email') && values.email !== '')
-      if (email === 'dataus@dataus.co.kr') {
-        setIsAvailableEmail(false);
-        alert('중복된 이메일입니다.');
-      } else {
-        setIsAvailableEmail(true);
-        alert('사용 가능한 이메일입니다.');
-      }
+      dispatch(emailCheck(email))
+        .then((data) => {
+          console.log(data);
+        })
+        .catch((err) => alert(err?.response?.data?.message));
+    // if (email === 'dataus@dataus.co.kr') {
+    //   setIsAvailableEmail(false);
+    //   alert('중복된 이메일입니다.');
+    // } else {
+    //   setIsAvailableEmail(true);
+    //   alert('사용 가능한 이메일입니다.');
+    // }
   };
 
   const [isAvailableNickname, setIsAvailableNickname] = useState(false);

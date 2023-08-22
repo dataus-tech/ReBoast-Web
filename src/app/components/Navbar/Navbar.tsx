@@ -12,7 +12,12 @@ import SignUpAgreeModal from 'app/components/SignUpAgreeModal/SignUpAgreeModal';
 interface AuthState {
   auth: {
     isLoggedIn: boolean;
-    user: any[] | null;
+    user: {
+      accessToken: string;
+      name: string;
+      refreshToken: string;
+      userId: number;
+    };
   };
 }
 
@@ -29,7 +34,9 @@ const Navbar = () => {
   const isConsultingPage = pathname === '/consulting';
   const isMentorPage = pathname === '/mentor';
 
-  const { isLoggedIn } = useSelector((state: AuthState) => state.auth);
+  const { isLoggedIn, user } = useSelector((state: AuthState) => state.auth);
+  console.log(useSelector((state: AuthState) => state.auth));
+  const name = user?.name;
 
   const [isDummyLoggedIn, setIsDummyLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
@@ -135,17 +142,19 @@ const Navbar = () => {
           </div>
         </div>
         <div className="nav-top-right">
-          {isDummyLoggedIn ? (
+          {isLoggedIn ? (
             // isLoggedIn
+            // isDummyLoggedIn
             <>
               <div className="nickname" onClick={moveToMyPage}>
-                {nickname}
+                {name}
+                {/* nickname */}
               </div>
               <Link
                 to=""
                 className="nav-link"
-                onClick={() => setIsDummyLoggedIn(false)}
-                // onClick={logOut}
+                // onClick={() => setIsDummyLoggedIn(false)}
+                onClick={logOut}
               >
                 로그아웃
               </Link>

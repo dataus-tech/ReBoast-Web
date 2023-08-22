@@ -123,6 +123,9 @@
   color: #dc3545;
   font-size: 14px;
   margin-bottom: 10px;
+  position: relative;
+  left: 200px;
+  bottom: 40px;
 }
 
 .gender-box {

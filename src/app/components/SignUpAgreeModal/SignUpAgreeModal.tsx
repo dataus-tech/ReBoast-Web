@@ -94,7 +94,7 @@ const SignUpAgreeModal: React.FC<SignUpModalProps> = ({ isOpen, close }) => {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    if (isFirstOptionChecked && isSecondOptionChecked && isThirdOptionChecked) {
+    if (isSecondOptionChecked && isThirdOptionChecked) {
       close();
       resetAgreeOption();
       navigate('/register');

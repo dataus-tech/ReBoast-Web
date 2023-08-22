@@ -34,6 +34,10 @@ interface GetUserInfoType {
   accessToken: string;
 }
 
+interface EmailCheckType {
+  email: string;
+}
+
 const userString = localStorage.getItem('user');
 const user = JSON.parse(userString || 'null');
 
@@ -54,6 +58,26 @@ export const register = createAsyncThunk<any, RegisterType>(
         error.toString();
       thunkAPI.dispatch(setMessage(message));
       thunkAPI.dispatch(registerRejected());
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const emailCheck = createAsyncThunk<any, string>(
+  'auth/email',
+  async (email, thunkAPI) => {
+    console.log(email);
+    try {
+      const data = await AuthService.emailCheck(email);
+      return { data };
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
       return thunkAPI.rejectWithValue(error);
     }
   },
