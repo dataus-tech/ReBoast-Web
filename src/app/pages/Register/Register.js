@@ -5,6 +5,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import moment from 'moment';
 import DaumPostcodeEmbed from 'react-daum-postcode';
+import axios from 'axios';
 
 import { register, emailCheck } from 'app/slices/auth';
 import { clearMessage } from 'app/slices/message';
@@ -14,6 +15,19 @@ import FormField from 'app/components/FormField/FormField';
 import 'app/pages/Register/Register.css';
 
 const Register = () => {
+  useEffect(() => {
+    axios
+      .get(
+        '/webhook/a5b748fb-5c4f-4913-8a41-893c98192f47/check/dataus1@naver.com',
+      )
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error('Error fetching data:', error);
+      });
+  }, []);
+
   const { message } = useSelector((state) => state.message);
   const [visible, setVisible] = useState(false);
   const [address, setAddress] = useState('');
@@ -245,7 +259,9 @@ const Register = () => {
       });
       alert('입력된 회원 정보를 확인해주세요.\n' + errList);
     }
-    if (isAvailableEmail && isObjectEmpty(errors) && !hasEmptyString(values)) {
+    if (isObjectEmpty(errors) && !hasEmptyString(values)) {
+      // isAvailableEmail
+
       // alert('회원가입이 완료되었습니다.');
       // navigate('/');
       // window.scrollTo(0, 0);
@@ -282,8 +298,15 @@ const Register = () => {
     }
     if (!Object.keys(errors).includes('email') && values.email !== '')
       dispatch(emailCheck(email))
-        .then((data) => {
-          console.log(data);
+        .then((res) => {
+          console.log(res.payload.data.status);
+          if (res.payload.data.status === 200) {
+            setIsAvailableEmail(false);
+            alert('중복된 이메일입니다.');
+          } else {
+            setIsAvailableEmail(true);
+            alert('사용 가능한 이메일입니다.');
+          }
         })
         .catch((err) => alert(err?.response?.data?.message));
     // if (email === 'dataus@dataus.co.kr') {

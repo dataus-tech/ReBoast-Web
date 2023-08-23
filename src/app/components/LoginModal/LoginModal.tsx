@@ -122,7 +122,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ isOpen, close, setEmail }) => {
       // close();
       dispatch(login({ email, password }))
         .unwrap()
-        .then(() => {
+        .then((res) => {
+          const { email } = res.user;
+          localStorage.setItem('email', email);
           navigate('/');
           close();
         })

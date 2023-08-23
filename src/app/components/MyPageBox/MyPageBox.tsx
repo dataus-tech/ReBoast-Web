@@ -13,7 +13,13 @@ const MyPageBox = (props: MyPageBoxType) => {
   const isNickname = infoType === '닉네임';
   const isEmail = infoType === '이메일';
   const isAddressArray = typeof infoContent === 'object';
-  const [zipCode, address, detailAddress] = infoContent;
+
+  let zipCode, address, detailAddress;
+  if (isAddress) {
+    zipCode = infoContent?.[0];
+    address = infoContent?.[1];
+    detailAddress = infoContent?.[2];
+  }
 
   const [isChangePW, setIsChangePW] = useState(false);
   const [isShowPW, setIsShowPW] = useState(false);
@@ -38,7 +44,7 @@ const MyPageBox = (props: MyPageBoxType) => {
       </div>
       <div>
         <div className={css['mypage-content-box']}>
-          {isAddressArray && (
+          {isAddressArray && Array.isArray(infoContent) && (
             <div className={css['address-box']}>
               <div className={css['zip-code']}>{zipCode}</div>
               <div className={css['address']}>{address}</div>

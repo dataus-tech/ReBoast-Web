@@ -89,7 +89,7 @@ export const login = createAsyncThunk<any, LoginType>(
     try {
       const data = await AuthService.login(email, password);
       thunkAPI.dispatch(loginFulfilled(data));
-      return { user: data };
+      return { user: { ...data, email } };
     } catch (error: any) {
       const message =
         (error.response &&
@@ -155,6 +155,7 @@ export const logout = createAsyncThunk<any, LogoutType>(
       if (refreshToken !== null && accessToken !== null) {
         await AuthService.logout(refreshToken, accessToken);
         thunkAPI.dispatch(logoutFulfilled());
+        return { isLoggedIn: false, user: null };
       }
     } catch (error: any) {
       const message =

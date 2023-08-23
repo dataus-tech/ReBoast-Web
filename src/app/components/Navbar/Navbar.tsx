@@ -24,6 +24,11 @@ interface AuthState {
 const Navbar = () => {
   const refreshToken = localStorage.getItem('refreshToken');
   const accessToken = localStorage.getItem('accessToken');
+  const dispatch = useDispatch<AppDispatch>();
+
+  const logOut = useCallback(() => {
+    dispatch(logout({ refreshToken, accessToken }));
+  }, [dispatch, refreshToken, accessToken]);
 
   const navigate = useNavigate();
 
@@ -40,12 +45,6 @@ const Navbar = () => {
   const [isDummyLoggedIn, setIsDummyLoggedIn] = useState(false);
   const [email, setEmail] = useState('');
   const [savedEmail, setSavedEmail] = useState('');
-
-  const dispatch = useDispatch<AppDispatch>();
-
-  const logOut = useCallback(() => {
-    dispatch(logout({ refreshToken, accessToken }));
-  }, [dispatch, refreshToken, accessToken]);
 
   // useEffect(() => {
   //   if (!accessToken) {
@@ -156,8 +155,8 @@ const Navbar = () => {
                     <Link
                       to=""
                       className="nav-link logout"
-                      onClick={() => dispatch(dummyLogout())}
-                      // onClick={logOut}
+                      // onClick={() => dispatch(dummyLogout())}
+                      onClick={logOut}
                     >
                       로그아웃
                     </Link>

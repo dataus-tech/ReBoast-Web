@@ -65,9 +65,8 @@ const reissuanceToken = (refreshToken: string) => {
 };
 
 const emailCheck = (email: string) => {
-  console.log(email);
-  return instance
-    .post(`/webhook/a5b748fb-5c4f-4913-8a41-893c98192f47/check/${email}`)
+  return axios
+    .get(`/webhook/a5b748fb-5c4f-4913-8a41-893c98192f47/check/${email}`)
     .then((response) => {
       return response;
     })
