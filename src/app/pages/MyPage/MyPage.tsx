@@ -36,19 +36,6 @@ const MyPage = () => {
       });
   };
 
-  useEffect(() => {
-    axios
-      .get(`/webhook/c5c124bc-c7b0-4c58-9d94-d2250a207d3d/${email}`)
-      .then((response) => {
-        if (response?.status === 200) {
-          setUserInfo(response.data);
-        }
-      })
-      .catch((err) => {
-        return err;
-      });
-  }, []);
-
   const username = userInfo?.username;
   const userEmail = userInfo?.email;
   const phone_number = userInfo?.phone_number;
