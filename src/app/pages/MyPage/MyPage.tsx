@@ -28,6 +28,7 @@ const MyPage = () => {
           alert('탈퇴가 완료되었습니다.');
           navigate('/');
           window.scrollTo(0, 0);
+          window.localStorage.clear();
         }
       })
       .catch((err) => {
