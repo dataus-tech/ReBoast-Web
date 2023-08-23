@@ -25,12 +25,7 @@ interface LoginModalProps {
   close: () => void;
 }
 
-const LoginModal: React.FC<LoginModalProps> = ({
-  isOpen,
-  close,
-  setIsDummyLoggedIn,
-  setEmail,
-}) => {
+const LoginModal: React.FC<LoginModalProps> = ({ isOpen, close, setEmail }) => {
   const navigate = useNavigate();
 
   const searchParams = useLocation().search;

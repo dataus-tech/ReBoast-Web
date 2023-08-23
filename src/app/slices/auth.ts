@@ -209,35 +209,85 @@ export const getUserInfo = createAsyncThunk<any, GetUserInfoType>(
 );
 
 export const reset = createAsyncThunk('auth/reset', async (_, thunkAPI) => {
-  thunkAPI.dispatch(resetFulfilled());
-  return { isLoggedIn: false, user: null };
+  try {
+    thunkAPI.dispatch(resetFulfilled());
+    return { isLoggedIn: false, user: null };
+  } catch (error: any) {
+    const message =
+      (error.response && error.response.data && error.response.data.message) ||
+      error.message ||
+      error.toString();
+    thunkAPI.dispatch(setMessage(message));
+    return thunkAPI.rejectWithValue(error);
+  }
 });
 
-export const dummyLogin = createAsyncThunk(
+export const dummyLogin = createAsyncThunk<any, string>(
   'auth/dummyLogin',
-  async (_, thunkAPI) => {
-    thunkAPI.dispatch(dummyLoginFulfilled());
-    console.log(123);
-    return { isLoggedIn: true, user: null };
+  async (email, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(dummyLoginFulfilled(email));
+      return { isLoggedIn: true, user: email };
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue(error);
+    }
   },
 );
 
 export const dummyLogout = createAsyncThunk(
   'auth/dummyLogout',
   async (_, thunkAPI) => {
-    thunkAPI.dispatch(dummyLogoutFulfilled(user));
-    return { isLoggedIn: false };
+    try {
+      thunkAPI.dispatch(dummyLogoutFulfilled());
+      return { isLoggedIn: false, user: null };
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue(error);
+    }
+  },
+);
+
+export const underFourteenCheck = createAsyncThunk<any, boolean>(
+  'auth/underFourteenCheck',
+  async (isUnderFourteen, thunkAPI) => {
+    try {
+      thunkAPI.dispatch(underFourteenFulfilled(isUnderFourteen));
+      return { underFourteen: isUnderFourteen };
+    } catch (error: any) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      thunkAPI.dispatch(setMessage(message));
+      return thunkAPI.rejectWithValue(error);
+    }
   },
 );
 
 interface AuthState {
   isLoggedIn: boolean;
   user: any[] | null;
+  underFourteen: boolean;
 }
 
 const initialState: AuthState = user
-  ? { isLoggedIn: true, user }
-  : { isLoggedIn: false, user: null };
+  ? { isLoggedIn: true, user, underFourteen: false }
+  : { isLoggedIn: false, user: null, underFourteen: false };
 
 const authSlice = createSlice({
   name: 'auth',
@@ -277,12 +327,16 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.user = null;
     },
-    dummyLoginFulfilled: (state) => {
+    dummyLoginFulfilled: (state, action) => {
       state.isLoggedIn = true;
-      state.user = null;
+      state.user = action.payload;
     },
     dummyLogoutFulfilled: (state) => {
       state.isLoggedIn = false;
+      state.user = null;
+    },
+    underFourteenFulfilled: (state, action) => {
+      state.underFourteen = action.payload;
     },
   },
 });
@@ -299,6 +353,7 @@ const {
   resetFulfilled,
   dummyLoginFulfilled,
   dummyLogoutFulfilled,
+  underFourteenFulfilled,
 } = authSlice.actions;
 const { reducer } = authSlice;
 export default reducer;

@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { reset } from 'app/slices/auth';
-import { logout } from 'app/slices/auth';
+import { logout, dummyLogout } from 'app/slices/auth';
 import { useLocation } from 'react-router-dom';
 import LoginModal from 'app/components/LoginModal/LoginModal';
 import 'app/components/Navbar/Navbar.css';
@@ -35,7 +35,6 @@ const Navbar = () => {
   const isMentorPage = pathname === '/mentor';
 
   const { isLoggedIn, user } = useSelector((state: AuthState) => state.auth);
-  console.log(useSelector((state: AuthState) => state.auth));
   const name = user?.name;
 
   const [isDummyLoggedIn, setIsDummyLoggedIn] = useState(false);
@@ -48,11 +47,11 @@ const Navbar = () => {
     dispatch(logout({ refreshToken, accessToken }));
   }, [dispatch, refreshToken, accessToken]);
 
-  useEffect(() => {
-    if (isLoggedIn && !accessToken) {
-      dispatch(reset());
-    }
-  }, [dispatch, isLoggedIn, accessToken]);
+  // useEffect(() => {
+  //   if (!accessToken) {
+  //     dispatch(reset());
+  //   }
+  // }, [dispatch, accessToken]);
 
   const [isMouseOver, setIsMouseOver] = useState(false);
   const [prevMouseY, setPrevMouseY] = useState(0);
@@ -117,8 +116,9 @@ const Navbar = () => {
     setIsAgreeModalOpen(false);
   };
 
-  const moveToMyPage = () => {
-    navigate('mypage');
+  const [isUserBoxOpen, setIsUserBoxOpen] = useState(false);
+  const toggleBox = () => {
+    setIsUserBoxOpen(!isUserBoxOpen);
   };
 
   return (
@@ -143,21 +143,28 @@ const Navbar = () => {
         </div>
         <div className="nav-top-right">
           {isLoggedIn ? (
-            // isLoggedIn
-            // isDummyLoggedIn
             <>
-              <div className="nickname" onClick={moveToMyPage}>
-                {name}
-                {/* nickname */}
+              <div className="nickname" onClick={toggleBox}>
+                <img src="/images/user.png" alt="유저 프로필 이미지" />
+                <span className="nickname-text">{name}</span>
+                <img src="/images/user-down.png" alt="아래 화살표" />
+                {isUserBoxOpen && (
+                  <div className="user-box">
+                    <Link to="/mypage" className="nav-link mypage">
+                      마이페이지
+                    </Link>
+                    <Link
+                      to=""
+                      className="nav-link logout"
+                      onClick={() => dispatch(dummyLogout())}
+                      // onClick={logOut}
+                    >
+                      로그아웃
+                    </Link>
+                  </div>
+                )}
               </div>
-              <Link
-                to=""
-                className="nav-link"
-                // onClick={() => setIsDummyLoggedIn(false)}
-                onClick={logOut}
-              >
-                로그아웃
-              </Link>
+              {/* onClick={moveToMyPage} */}
             </>
           ) : (
             <>
@@ -248,12 +255,12 @@ const Navbar = () => {
                 이용자 가이드
               </span>
             </div> */}
-            <div className="schedule" onClick={() => alert('준비중입니다.')}>
+            {/* <div className="schedule" onClick={() => alert('준비중입니다.')}>
               <span className="star">
                 <img src="/images/star.png" alt="내강의 일정" />
                 내강의 일정
               </span>
-            </div>
+            </div> */}
           </div>
         </div>
       </nav>
