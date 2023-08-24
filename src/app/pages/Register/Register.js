@@ -15,19 +15,6 @@ import FormField from 'app/components/FormField/FormField';
 import 'app/pages/Register/Register.css';
 
 const Register = () => {
-  useEffect(() => {
-    axios
-      .get(
-        '/webhook/a5b748fb-5c4f-4913-8a41-893c98192f47/check/dataus1@naver.com',
-      )
-      .then((response) => {
-        console.log(response);
-      })
-      .catch((error) => {
-        console.error('Error fetching data:', error);
-      });
-  }, []);
-
   const { message } = useSelector((state) => state.message);
   const [visible, setVisible] = useState(false);
   const [address, setAddress] = useState('');

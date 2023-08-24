@@ -19,6 +19,20 @@ const MyPage = () => {
     dispatch(logout({ refreshToken, accessToken }));
   }, [dispatch, refreshToken, accessToken]);
 
+  useEffect(() => {
+    axios
+      .get(`/webhook/c5c124bc-c7b0-4c58-9d94-d2250a207d3d/${email}`)
+      .then((response) => {
+        console.log(response);
+        if (response?.status === 200) {
+          setUserInfo(response?.data);
+        }
+      })
+      .catch((err) => {
+        return err;
+      });
+  }, []);
+
   const secession = () => {
     axios
       .delete(`/webhook/d41bd001-de41-4441-bb14-a90b56f926c8/${email}`)
@@ -62,7 +76,7 @@ const MyPage = () => {
         <img className={css.person} src="/images/verified.png" alt="개인정보" />
         <div className={css['user-info']}>개인정보</div>
       </div>
-      <MyPageBox infoType="이름" infoContent="김민지" />
+      <MyPageBox infoType="이름" infoContent={username} />
       <MyPageBox infoType="성별" infoContent={gender} />
       <MyPageBox infoType="생년월일" infoContent={birthdate} />
       <MyPageBox infoType="핸드폰 번호" infoContent={phone_number} />
